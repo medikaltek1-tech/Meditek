@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tıbbi Tedarik Pazaryeri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+        
+        :root {
+            --background: hsl(0 0% 100%);
+            --foreground: hsl(222 84% 5%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222 84% 5%);
+            --primary: hsl(217 91% 60%);
+            --primary-foreground: hsl(0 0% 100%);
+            --secondary: hsl(210 40% 98%);
+            --secondary-foreground: hsl(222 84% 5%);
+            --muted: hsl(210 40% 98%);
+            --muted-foreground: hsl(215 20% 35%);
+            --border: hsl(214 32% 91%);
+            --input: hsl(214 32% 91%);
+            --ring: hsl(217 91% 60%);
+        }
+        
+        .dark {
+            --background: hsl(222 84% 5%);
+            --foreground: hsl(213 31% 91%);
+            --card: hsl(222 84% 5%);
+            --card-foreground: hsl(213 31% 91%);
+            --primary: hsl(217 91% 60%);
+            --primary-foreground: hsl(222 84% 5%);
+            --secondary: hsl(222 47% 11%);
+            --secondary-foreground: hsl(210 40% 98%);
+            --muted: hsl(217 32% 17%);
+            --muted-foreground: hsl(215 20% 65%);
+            --border: hsl(217 32% 17%);
+            --input: hsl(217 32% 17%);
+        }
+        
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        
+        .dark { color-scheme: dark; }
+        .dark body { background-color: #0f172a; color: #f1f5f9; }
+        .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 { color: #ffffff; }
+        .dark p, .dark span, .dark div { color: #e2e8f0; }
+        .dark .text-muted-foreground { color: #94a3b8; }
+        .dark .text-foreground { color: #ffffff; }
+        .dark .bg-card { background-color: #1e293b; border-color: #334155; }
+        .dark .border-border { border-color: #334155; }
+        .dark input, .dark select, .dark textarea { 
+            background-color: #374151; 
+            border-color: #4b5563; 
+            color: #ffffff; 
+        }
+        
+        .pulse-animation { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .countdown-text { 
+            font-feature-settings: "tnum"; 
+            font-variant-numeric: tabular-nums; 
+            font-family: 'Courier New', monospace;
+        }
+        
+        .badge-glow { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+        .rating-star { color: #fbbf24; text-shadow: 0 0 2px rgba(251, 191, 36, 0.3); }
+        
+        .notification-enter { transform: translateX(100%); transition: transform 0.3s ease-in-out; }
+        .notification-show { transform: translateX(0); }
+        
+        .card-hover:hover { 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
+            transform: translateY(-2px); 
+            transition: all 0.3s ease; 
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <div id="app"></div>
+
+    <script>
+        // Global state management
+        const AppState = {
+            currentUser: null,
+            isDarkMode: localStorage.getItem('darkMode') === 'true',
+            notifications: JSON.parse(localStorage.getItem('notifications') || '[]'),
+            
+            // Sample data from your original code
+            users: [
+                { id: 'admin1', username: 'admin', password: 'admin123', role: 'admin', name: 'Admin User', location: 'İstanbul', email: 'admin@platform.com', phone: '+90 212 555 0001' },
+                { id: 'clinic1', username: 'clinic1', password: 'clinic123', role: 'clinic', name: 'Özel Tıp Merkezi', location: 'İstanbul', email: 'clinic@ozel.com', phone: '+90 212 555 0002' },
+                { id: 'supplier1', username: 'supplier1', password: 'supplier123', role: 'supplier', name: 'Medikal Tedarik A.Ş.', location: 'İstanbul', email: 'info@medikaltedarik.com', phone: '+90 212 555 0003' },
+                { id: 'supplier2', username: 'supplier2', password: 'supplier123', role: 'supplier', name: 'TıpTech Solutions', location: 'Ankara', email: 'info@tiptech.com', phone: '+90 312 555 0004' }
+            ],
+            
+            suppliers: [
+                {
+                    id: 'supplier1',
+                    userId: 'supplier1',
+                    companyName: 'Medikal Tedarik A.Ş.',
+                    location: 'İstanbul, Türkiye',
+                    description: 'Tıbbi sarf malzemeleri ve ekipman tedariki',
+                    verified: true,
+                    badges: ['Hızlı Yanıtlayan', 'En Çok Teklif Kazanan', 'Belgeleri Onaylı'],
+                    totalOffers: 45,
+                    wonOffers: 32,
+                    averageRating: 4.7,
+                    totalRatings: 134,
+                    averageResponseTime: 2.5
+                },
+                {
+                    id: 'supplier2',
+                    userId: 'supplier2',
+                    companyName: 'TıpTech Solutions',
+                    location: 'Ankara, Türkiye',
+                    description: 'Görüntüleme cihazları ve laboratuvar ekipmanları',
+                    verified: true,
+                    badges: ['Belgeleri Onaylı', 'Kalite Güvencesi'],
+                    totalOffers: 28,
+                    wonOffers: 18,
+                    averageRating: 4.2,
+                    totalRatings: 87,
+                    averageResponseTime: 4.1
+                }
+            ],
+            
+            requests: [
+                {
+                    id: 'req1',
+                    clinicId: 'clinic1',
+                    title: 'Ultrason Jeli - 50 Adet',
+                    description: 'Ultrason muayenesi için kullanılacak jel',
+                    category: 'Tıbbi Sarf Malzemesi',
+                    quantity: 50,
+                    unit: 'adet',
+                    deadline: new Date(Date.now() + 36 * 60 * 60 * 1000 + 42 * 60 * 1000 + 15 * 1000),
+                    status: 'active',
+                    location: 'İstanbul',
+                    budgetMin: 2000,
+                    budgetMax: 4000,
+                    views: 23,
+                    offers: [
+                        {
+                            id: 'offer1',
+                            supplierId: 'supplier1',
+                            price: 2800,
+                            description: 'Premium kalite ultrason jeli',
+                            deliveryTime: '2-3 gün',
+                            status: 'pending'
+                        }
+                    ]
+                },
+                {
+                    id: 'req2',
+                    clinicId: 'clinic1',
+                    title: 'EKG Kağıdı - 100 Adet',
+                    description: 'Kardiyoloji kliniği için EKG kağıdı',
+                    category: 'Tıbbi Sarf Malzemesi',
+                    quantity: 100,
+                    unit: 'adet',
+                    deadline: new Date(Date.now() + 18 * 60 * 60 * 1000 + 25 * 60 * 1000 + 42 * 1000),
+                    status: 'active',
+                    location: 'Ankara',
+                    budgetMin: 1500,
+                    budgetMax: 2500,
+                    views: 41,
+                    offers: []
+                }
+            ],
+            
+            orders: [
+                {
+                    id: 'order1',
+                    requestId: 'req1',
+                    offerId: 'offer1',
+                    clinicId: 'clinic1',
+                    supplierId: 'supplier1',
+                    status: 'preparing',
+                    totalAmount: 2800,
+                    createdAt: new Date()
+                }
+            ],
+            
+            benchmarkPrices: [
+                { productName: 'Ultrason Jeli', category: 'Tıbbi Sarf Malzemesi', minPrice: 50, maxPrice: 120, averagePrice: 85 },
+                { productName: 'EKG Kağıdı', category: 'Tıbbi Sarf Malzemesi', minPrice: 180, maxPrice: 250, averagePrice: 215 },
+                { productName: 'X-Ray Filmi', category: 'Görüntüleme', minPrice: 300, maxPrice: 500, averagePrice: 400 },
+                { productName: 'Steril Eldiven', category: 'Tıbbi Sarf Malzemesi', minPrice: 80, maxPrice: 150, averagePrice: 115 }
+            ],
+            
+            analytics: {
+                totalRequests: 2,
+                mostPopularCategory: { name: 'Tıbbi Sarf Malzemesi', count: 2 },
+                activeSuppliers: 2,
+                averageResponseTime: 3.3
+            },
+            
+            currentPage: 'dashboard',
+            categoryFilter: 'all',
+            locationFilter: 'all',
+            searchQuery: '',
+            statusFilter: 'all'
+        };
+
+        // Authentication functions
+        function login(username, password) {
+            const user = AppState.users.find(u => u.username === username && u.password === password);
+            if (user) {
+                AppState.currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                return true;
+            }
+            return false;
+        }
+
+        function logout() {
+            AppState.currentUser = null;
+            localStorage.removeItem('currentUser');
+            render();
+        }
+
+        function checkAuth() {
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                AppState.currentUser = JSON.parse(storedUser);
+            }
+        }
+
+        // Dark mode toggle
+        function toggleDarkMode() {
+            AppState.isDarkMode = !AppState.isDarkMode;
+            localStorage.setItem('darkMode', AppState.isDarkMode);
+            document.documentElement.classList.toggle('dark', AppState.isDarkMode);
+            render();
+        }
+
+        // Notification system
+        function showNotification(title, message, type = 'info') {
+            const notification = {
+                id: Date.now().toString(),
+                title,
+                message,
+                type,
+                timestamp: new Date().toISOString()
+            };
+            
+            AppState.notifications.unshift(notification);
+            AppState.notifications = AppState.notifications.slice(0, 10);
+            localStorage.setItem('notifications', JSON.stringify(AppState.notifications));
+            
+            displayNotificationPopup(notification);
+        }
+
+        function displayNotificationPopup(notification) {
+            const popup = document.createElement('div');
+            popup.className = `fixed top-20 right-4 z-50 max-w-sm w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg notification-enter`;
+            
+            const iconClass = {
+                'success': 'fa-check-circle text-green-500',
+                'warning': 'fa-exclamation-triangle text-yellow-500',
+                'error': 'fa-exclamation-circle text-red-500',
+                'info': 'fa-info-circle text-blue-500'
+            };
+            
+            popup.innerHTML = `
+                <div class="p-4">
+                    <div class="flex items-start space-x-3">
+                        <i class="fas ${iconClass[notification.type]}"></i>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-medium text-gray-900 dark:text-white">${notification.title}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${notification.message}</p>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            setTimeout(() => popup.classList.add('notification-show'), 100);
+            setTimeout(() => popup.remove(), 5000);
+        }
+
+        // Countdown timer function
+        function formatCountdown(deadline) {
+            const now = new Date();
+            const diff = new Date(deadline) - now;
+            
+            if (diff <= 0) return '<span class="text-red-500 font-bold countdown-text">Süre Doldu</span>';
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            return `<span class="countdown-text text-blue-600 dark:text-blue-400 font-bold">${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}</span>`;
+        }
+
+        // Star rating display
+        function renderStarRating(rating, totalRatings) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let stars = '';
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star rating-star"></i>';
+            }
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt rating-star"></i>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star text-gray-400 dark:text-gray-500"></i>';
+            }
+            
+            return `
+                <div class="flex items-center space-x-2 mt-2">
+                    <div class="flex space-x-1">${stars}</div>
+                    ${totalRatings > 0 ? `<span class="text-sm text-gray-600 dark:text-gray-400">(${rating.toFixed(1)}) ${totalRatings} değerlendirme</span>` : ''}
+                </div>
+            `;
+        }
+
+        // Process status update
+        function updateOrderStatus(orderId, status) {
+            const order = AppState.orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = status;
+                showNotification('Durum Güncellendi', `Sipariş durumu "${status}" olarak güncellendi.`, 'success');
+                render();
+            }
+        }
+
+        // Filter functions
+        function setCategoryFilter(value) {
+            AppState.categoryFilter = value;
+            render();
+        }
+
+        function setLocationFilter(value) {
+            AppState.locationFilter = value;
+            render();
+        }
+
+        function setSearchQuery(value) {
+            AppState.searchQuery = value;
+            render();
+        }
+
+        function setStatusFilter(value) {
+            AppState.statusFilter = value;
+            render();
+        }
+
+        function setCurrentPage(page) {
+            AppState.currentPage = page;
+            render();
+        }
+
+        // Login component
+        function LoginComponent() {
+            return `
+                <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8 w-full max-w-md">
+                        <div class="text-center mb-8">
+                            <div class="bg-blue-500/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-heartbeat text-2xl text-blue-500"></i>
+                            </div>
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tıbbi Tedarik Pazaryeri</h1>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2">Hesabınıza giriş yapın</p>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="tabs">
+                                <div class="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1 mb-4">
+                                    <button onclick="showTab('login')" id="login-tab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400">Giriş Yap</button>
+                                    <button onclick="showTab('demo')" id="demo-tab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Demo Hesaplar</button>
+                                </div>
+                                
+                                <div id="login-content" class="tab-content">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kullanıcı Adı</label>
+                                            <input id="username" type="text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="Kullanıcı adınızı girin">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Şifre</label>
+                                            <input id="password" type="password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="Şifrenizi girin" onkeypress="if(event.key==='Enter') attemptLogin()">
+                                        </div>
+                                        <button onclick="attemptLogin()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
+                                            Giriş Yap
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="demo-content" class="tab-content hidden">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">Demo hesaplarından birini seçin:</p>
+                                    <div class="space-y-3">
+                                        <button onclick="quickLogin('clinic1', 'clinic123')" class="w-full flex items-center justify-start space-x-3 p-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                            <i class="fas fa-hospital text-blue-500"></i>
+                                            <span class="text-gray-900 dark:text-white">Klinik Hesabı (clinic1)</span>
+                                        </button>
+                                        <button onclick="quickLogin('supplier1', 'supplier123')" class="w-full flex items-center justify-start space-x-3 p-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                            <i class="fas fa-truck text-green-500"></i>
+                                            <span class="text-gray-900 dark:text-white">Tedarikçi Hesabı (supplier1)</span>
+                                        </button>
+                                        <button onclick="quickLogin('admin', 'admin123')" class="w-full flex items-center justify-start space-x-3 p-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                            <i class="fas fa-cog text-purple-500"></i>
+                                            <span class="text-gray-900 dark:text-white">Admin Hesabı (admin)</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showTab(tabName) {
+            document.getElementById('login-content').classList.toggle('hidden', tabName !== 'login');
+            document.getElementById('demo-content').classList.toggle('hidden', tabName !== 'demo');
+            document.getElementById('login-tab').className = tabName === 'login' 
+                ? 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400'
+                : 'flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300';
+            document.getElementById('demo-tab').className = tabName === 'demo' 
+                ? 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400'
+                : 'flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300';
+        }
+
+        function attemptLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (login(username, password)) {
+                render();
+            } else {
+                showNotification('Giriş Başarısız', 'Kullanıcı adı veya şifre hatalı', 'error');
+            }
+        }
+
+        function quickLogin(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            setTimeout(() => {
+                if (login(username, password)) {
+                    render();
+                }
+            }, 100);
+        }
+
+        // Header component
+        function HeaderComponent() {
+            const role = AppState.currentUser.role;
+            const roleDisplay = role === 'supplier' ? 'Tedarikçi' : role === 'clinic' ? 'Klinik' : 'Admin';
+            
+            return `
+                <header class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-blue-500/10 p-2 rounded-lg">
+                                <i class="fas fa-heartbeat text-xl text-blue-500"></i>
+                            </div>
+                            <h1 class="text-xl font-bold text-gray-900 dark:text-white">Tıbbi Tedarik Pazaryeri</h1>
+                        </div>
+                        
+                        <nav class="flex items-center space-x-6">
+                            <div class="flex space-x-4">
+                                ${role === 'admin' ? `
+                                    <button onclick="setCurrentPage('dashboard')" class="${AppState.currentPage === 'dashboard' ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:text-blue-600'} px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                        <i class="fas fa-chart-bar mr-2"></i>Dashboard
+                                    </button>
+                                    <button onclick="setCurrentPage('requests')" class="${AppState.currentPage === 'requests' ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:text-blue-600'} px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                        <i class="fas fa-clipboard-list mr-2"></i>Talepler
+                                    </button>
+                                    <button onclick="setCurrentPage('suppliers')" class="${AppState.currentPage === 'suppliers' ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:text-blue-600'} px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                        <i class="fas fa-users mr-2"></i>Tedarikçiler
+                                    </button>
+                                ` : `
+                                    <button onclick="setCurrentPage('dashboard')" class="${AppState.currentPage === 'dashboard' ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:text-blue-600'} px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                        <i class="fas fa-chart-bar mr-2"></i>Dashboard
+                                    </button>
+                                `}
+                            </div>
+                            
+                            <button onclick="toggleDarkMode()" class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                                <i class="fas ${AppState.isDarkMode ? 'fa-sun' : 'fa-moon'}"></i>
+                            </button>
+                            
+                            <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                                <span>${AppState.currentUser.name}</span>
+                                <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs">${roleDisplay}</span>
+                            </div>
+                            
+                            <button onclick="logout()" class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </nav>
+                    </div>
+                </header>
+            `;
+        }
+
+        // Marketplace Pulse Component
+        function MarketplacePulse() {
+            const pulseData = AppState.analytics;
+            
+            return `
+                <div class="mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-chart-line text-blue-500 mr-3"></i>
+                            Anlık Pazaryeri Nabzı
+                        </h2>
+                        <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                            <span class="w-2 h-2 bg-green-500 rounded-full pulse-animation"></span>
+                            <span>Canlı</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">Son 7 Günde</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${pulseData.totalRequests}</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">Toplam Talep</p>
+                                </div>
+                                <div class="bg-blue-500/10 p-3 rounded-lg">
+                                    <i class="fas fa-chart-line text-xl text-blue-500"></i>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs text-green-500">+12% önceki haftaya göre</div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">En Popüler</p>
+                                    <p class="text-lg font-bold text-gray-900 dark:text-white">${pulseData.mostPopularCategory.name}</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">${pulseData.mostPopularCategory.count} talep</p>
+                                </div>
+                                <div class="bg-orange-500/10 p-3 rounded-lg">
+                                    <i class="fas fa-fire text-xl text-orange-500"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">Aktif Tedarikçi</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${pulseData.activeSuppliers}</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">Çevrimiçi</p>
+                                </div>
+                                <div class="bg-green-500/10 p-3 rounded-lg">
+                                    <i class="fas fa-users text-xl text-green-500"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">Ort. Yanıt Süresi</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${pulseData.averageResponseTime.toFixed(1)}h</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">Saat</p>
+                                </div>
+                                <div class="bg-purple-500/10 p-3 rounded-lg">
+                                    <i class="fas fa-clock text-xl text-purple-500"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Request Card Component
+        function RequestCard(request) {
+            const clinic = AppState.users.find(u => u.id === request.clinicId);
+            const isExpired = new Date(request.deadline) < new Date();
+            const hasOffers = request.offers.length > 0;
+            const benchmarkPrice = AppState.benchmarkPrices.find(bp => request.title.includes(bp.productName));
+            
+            const getStatusColor = (status, hasOffers) => {
+                if (status === "expired") return "bg-red-500/10 text-red-500";
+                if (hasOffers) return "bg-green-500/10 text-green-500";
+                return "bg-orange-500/10 text-orange-500";
+            };
+
+            const getStatusText = (status, hasOffers) => {
+                if (status === "expired") return "Süresi Doldu";
+                if (hasOffers) return "Teklifler Alındı";
+                return "Teklif Bekliyor";
+            };
+            
+            return `
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-lg transition-shadow card-hover p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">${request.title}</h3>
+                            <div class="flex items-center space-x-1 text-gray-600 dark:text-gray-400 text-sm mb-3">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${clinic.name} - ${request.location}</span>
+                            </div>
+                            
+                            ${benchmarkPrice ? `
+                                <div class="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
+                                    <p class="text-xs text-gray-600 dark:text-gray-400 mb-1 flex items-center">
+                                        <i class="fas fa-chart-line mr-1"></i>
+                                        Ortalama Piyasa Fiyatı
+                                    </p>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm font-medium text-gray-900 dark:text-white">
+                                            ₺${benchmarkPrice.minPrice} - ₺${benchmarkPrice.maxPrice}
+                                        </span>
+                                        <span class="text-xs text-green-500">arasında</span>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="text-right ml-4">
+                            <span class="inline-block px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(request.status, hasOffers)} mb-2">
+                                ${getStatusText(request.status, hasOffers)}
+                            </span>
+                            
+                            <div class="px-3 py-2 rounded-md ${isExpired ? 'bg-red-500/10 text-red-500' : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400'}">
+                                <p class="text-xs mb-1">Kalan Süre</p>
+                                ${formatCountdown(request.deadline)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center space-x-4">
+                            <span class="text-gray-600 dark:text-gray-400 flex items-center">
+                                <i class="fas fa-eye mr-1"></i>
+                                ${request.views} görüntüleme
+                            </span>
+                            <span class="text-gray-600 dark:text-gray-400 flex items-center">
+                                <i class="fas fa-comment mr-1"></i>
+                                ${request.offers.length} teklif
+                            </span>
+                        </div>
+                        
+                        <button onclick="showNotification('Detaylar', 'Talep detayları görüntüleniyor', 'info')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors">
+                            ${hasOffers ? "Teklifleri İncele" : "Detayları Görüntüle"}
+                        </button>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-600 dark:text-gray-400">Kategori:</span>
+                                <span class="ml-2 text-gray-900 dark:text-white">${request.category}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 dark:text-gray-400">Miktar:</span>
+                                <span class="ml-2 text-gray-900 dark:text-white">${request.quantity} ${request.unit}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Supplier Card Component
+        function SupplierCard(supplier) {
+            const user = AppState.users.find(u => u.id === supplier.userId);
+            
+            const getBadgeIcon = (badge) => {
+                switch (badge) {
+                    case "Hızlı Yanıtlayan": return '<i class="fas fa-bolt"></i>';
+                    case "En Çok Teklif Kazanan": return '<i class="fas fa-trophy"></i>';
+                    case "Belgeleri Onaylı": return '<i class="fas fa-certificate"></i>';
+                    default: return '<i class="fas fa-award"></i>';
+                }
+            };
+
+            const getBadgeColor = (badge) => {
+                switch (badge) {
+                    case "Hızlı Yanıtlayan": return "bg-green-500/10 text-green-500 border-green-500/20";
+                    case "En Çok Teklif Kazanan": return "bg-blue-500/10 text-blue-500 border-blue-500/20";
+                    case "Belgeleri Onaylı": return "bg-purple-500/10 text-purple-500 border-purple-500/20";
+                    default: return "bg-orange-500/10 text-orange-500 border-orange-500/20";
+                }
+            };
+            
+            return `
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-4">
+                            <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" 
+                                 alt="${supplier.companyName} Logo" 
+                                 class="w-16 h-16 rounded-lg object-cover border border-gray-200 dark:border-gray-700">
+                            <div>
+                                <h3 class="font-semibold text-gray-900 dark:text-white">${supplier.companyName}</h3>
+                                <div class="flex items-center space-x-1 text-gray-600 dark:text-gray-400 text-sm">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>${supplier.location}</span>
+                                </div>
+                                ${renderStarRating(supplier.averageRating, supplier.totalRatings)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${supplier.badges.map(badge => `
+                            <span class="inline-flex items-center px-2 py-1 text-xs font-medium border rounded-full ${getBadgeColor(badge)} badge-glow">
+                                ${getBadgeIcon(badge)}
+                                <span class="ml-1">${badge}</span>
+                            </span>
+                        `).join('')}
+                    </div>
+
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                        <h4 class="font-medium text-gray-900 dark:text-white mb-3">Operasyon Süreç Durumu</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Sipariş #12345 - Ultrason Jeli</span>
+                                <select onchange="updateOrderStatus('order1', this.value)" class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 dark:text-white">
+                                    <option value="preparing">Hazırlanıyor</option>
+                                    <option value="ready">Ürün Hazırlandı</option>
+                                    <option value="shipped">Kargoya Verildi</option>
+                                    <option value="delivered">Teslim Edildi</option>
+                                </select>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Sipariş #12346 - EKG Kağıdı</span>
+                                <select onchange="updateOrderStatus('order2', this.value)" class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 dark:text-white">
+                                    <option value="preparing">Hazırlanıyor</option>
+                                    <option value="ready">Ürün Hazırlandı</option>
+                                    <option value="shipped" selected>Kargoya Verildi</option>
+                                    <option value="delivered">Teslim Edildi</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button onclick="showNotification('Durumlar Güncellendi', 'Sipariş durumları başarıyla güncellendi', 'success')" class="w-full mt-3 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm">
+                            <i class="fas fa-save mr-2"></i>
+                            Durumları Güncelle
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">${supplier.totalOffers}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Toplam Teklif</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">${supplier.wonOffers}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Kazanılan</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">${supplier.averageResponseTime}h</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Ort. Yanıt</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Dashboard Component (mevcut kodunuzdaki gibi)
+        function Dashboard() {
+            const filteredRequests = AppState.requests.filter(request => {
+                const matchesCategory = AppState.categoryFilter === "all" || request.category === AppState.categoryFilter;
+                const matchesLocation = AppState.locationFilter === "all" || request.location?.includes(AppState.locationFilter);
+                const matchesSearch = AppState.searchQuery === "" || 
+                    request.title.toLowerCase().includes(AppState.searchQuery.toLowerCase()) ||
+                    request.description?.toLowerCase().includes(AppState.searchQuery.toLowerCase());
+                
+                return matchesCategory && matchesLocation && matchesSearch;
+            });
+
+            const categories = [...new Set(AppState.requests.map(r => r.category))];
+            const locations = [...new Set(AppState.requests.map(r => r.location?.split(",")[0]).filter(Boolean))];
+            
+            return `
+                <div class="container mx-auto px-4 py-8">
+                    ${MarketplacePulse()}
+
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-chart-line text-blue-500"></i>
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Aktif Talepler</h2>
+                            </div>
+                            
+                            <div class="flex items-center space-x-4">
+                                <select onchange="setCategoryFilter(this.value)" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 dark:text-white">
+                                    <option value="all">Tüm Kategoriler</option>
+                                    ${categories.map(category => `<option value="${category}" ${AppState.categoryFilter === category ? 'selected' : ''}>${category}</option>`).join('')}
+                                </select>
+
+                                <select onchange="setLocationFilter(this.value)" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 dark:text-white">
+                                    <option value="all">Tüm Şehirler</option>
+                                    ${locations.map(location => `<option value="${location}" ${AppState.locationFilter === location ? 'selected' : ''}>${location}</option>`).join('')}
+                                </select>
+
+                                <div class="relative">
+                                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    <input type="text" placeholder="Ürün ara..." value="${AppState.searchQuery}" onkeyup="setSearchQuery(this.value)" class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 dark:text-white w-64">
+                                </div>
+                            </div>
+                        </div>
+
+                        ${filteredRequests.length === 0 ? `
+                            <div class="bg-white dark:bg-gray-800 p-12 text-center rounded-lg border border-gray-200 dark:border-gray-700">
+                                <i class="fas fa-chart-line text-4xl text-gray-400 dark:text-gray-600 mb-4"></i>
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Aktif talep bulunamadı</h3>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    ${AppState.requests.length === 0 ? "Henüz hiç talep açılmamış." : "Filtrelere uygun talep bulunamadı."}
+                                </p>
+                            </div>
+                        ` : `
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                ${filteredRequests.map(request => RequestCard(request)).join('')}
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Suppliers Component
+        function Suppliers() {
+            return `
+                <div class="container mx-auto px-4 py-8">
+                    <div class="flex items-center space-x-3 mb-8">
+                        <i class="fas fa-users text-blue-500"></i>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Tedarikçi Yönetimi</h1>
+                    </div>
+
+                    ${AppState.suppliers.length === 0 ? `
+                        <div class="bg-white dark:bg-gray-800 p-12 text-center rounded-lg border border-gray-200 dark:border-gray-700">
+                            <i class="fas fa-award text-4xl text-gray-400 dark:text-gray-600 mb-4"></i>
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Tedarikçi bulunamadı</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Henüz kayıtlı tedarikçi bulunmuyor.</p>
+                        </div>
+                    ` : `
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            ${AppState.suppliers.map(supplier => SupplierCard(supplier)).join('')}
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        // Requests Component
+        function Requests() {
+            const filteredRequests = AppState.requests.filter(request => {
+                if (AppState.statusFilter === "all") return true;
+                return request.status === AppState.statusFilter;
+            });
+
+            const statusCounts = {
+                all: AppState.requests.length,
+                active: AppState.requests.filter(r => r.status === "active").length,
+                closed: AppState.requests.filter(r => r.status === "closed").length,
+                expired: AppState.requests.filter(r => r.status === "expired").length,
+            };
+            
+            return `
+                <div class="container mx-auto px-4 py-8">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-clipboard-list text-blue-500"></i>
+                            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Talep Yönetimi</h1>
+                        </div>
+                        
+                        <button onclick="showNotification('Yeni Talep', 'Yeni talep oluşturma formu açılıyor', 'info')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Yeni Talep Oluştur</span>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center space-x-4 mb-6">
+                        <i class="fas fa-filter text-gray-500"></i>
+                        <div class="flex space-x-2">
+                            ${[
+                                { key: "all", label: "Tümü", count: statusCounts.all },
+                                { key: "active", label: "Aktif", count: statusCounts.active },
+                                { key: "closed", label: "Kapanmış", count: statusCounts.closed },
+                                { key: "expired", label: "Süresi Dolmuş", count: statusCounts.expired },
+                            ].map(status => `
+                                <button onclick="setStatusFilter('${status.key}')" class="${AppState.statusFilter === status.key ? 'bg-blue-600 text-white' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'} px-4 py-2 rounded-md text-sm font-medium transition-colors relative">
+                                    ${status.label}
+                                    <span class="ml-2 px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
+                                        ${status.count}
+                                    </span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    ${filteredRequests.length === 0 ? `
+                        <div class="bg-white dark:bg-gray-800 p-12 text-center rounded-lg border border-gray-200 dark:border-gray-700">
+                            <i class="fas fa-clipboard-list text-4xl text-gray-400 dark:text-gray-600 mb-4"></i>
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Talep bulunamadı</h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                ${AppState.statusFilter === "all" 
+                                    ? "Henüz hiç talep oluşturulmamış." 
+                                    : `${AppState.statusFilter} durumunda talep bulunmuyor.`}
+                            </p>
+                        </div>
+                    ` : `
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            ${filteredRequests.map(request => RequestCard(request)).join('')}
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        // Admin Component (mevcut kodunuzdaki gibi)
+        function Admin() {
+            const recentActivities = [
+                {
+                    id: 1,
+                    type: "success",
+                    icon: "fa-check-circle",
+                    title: "Yeni teklif alındı",
+                    message: "Medikal Tedarik A.Ş. \"Ultrason Jeli\" talebinize teklif verdi",
+                    time: "2 dakika önce"
+                },
+                {
+                    id: 2,
+                    type: "warning", 
+                    icon: "fa-clock",
+                    title: "Süre uyarısı",
+                    message: "\"EKG Kağıdı\" talebi için son 18 saat kaldı",
+                    time: "1 saat önce"
+                },
+                {
+                    id: 3,
+                    type: "info",
+                    icon: "fa-star",
+                    title: "Tedarikçi değerlendirildi",
+                    message: "Özel Tıp Merkezi TıpTech Solutions'a 5 yıldız verdi",
+                    time: "3 saat önce"
+                }
+            ];
+            
+            return `
+                <div class="container mx-auto px-4 py-8">
+                    <div class="flex items-center space-x-3 mb-8">
+                        <i class="fas fa-cog text-blue-500"></i>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Admin Paneli</h1>
+                    </div>
+
+                    ${MarketplacePulse()}
+
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                            <i class="fas fa-chart-bar text-green-500 mr-3"></i>
+                            Detaylı Analitikler
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                                <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Toplam Kullanıcı</h3>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-users text-2xl text-blue-500"></i>
+                                    <div>
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white">254</p>
+                                        <p class="text-xs text-green-500">+8% bu hafta</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                                <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Aktif Siparişler</h3>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-chart-line text-2xl text-orange-500"></i>
+                                    <div>
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white">67</p>
+                                        <p class="text-xs text-blue-500">23 hazırlanıyor</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                                <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Tamamlanan İşlemler</h3>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-check-circle text-2xl text-green-500"></i>
+                                    <div>
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white">1,243</p>
+                                        <p class="text-xs text-green-500">98.5% başarı oranı</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                                <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Bekleyen İncelemeler</h3>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-exclamation-triangle text-2xl text-yellow-500"></i>
+                                    <div>
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white">12</p>
+                                        <p class="text-xs text-yellow-500">3 yeni başvuru</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Kategori Dağılımı (Son 7 Gün)</h3>
+                            <div class="space-y-4">
+                                ${AppState.benchmarkPrices.map(price => `
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-sm font-medium text-gray-900 dark:text-white">${price.category}</span>
+                                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs">
+                                                ${Math.floor(Math.random() * 10) + 1} talep
+                                            </span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                            <div class="bg-blue-600 rounded-full h-2" style="width: ${Math.floor(Math.random() * 80) + 20}%"></div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Son Aktiviteler</h3>
+                            <div class="space-y-4">
+                                ${recentActivities.map(activity => {
+                                    const iconColor = activity.type === 'success' ? 'text-green-500' :
+                                                    activity.type === 'warning' ? 'text-orange-500' : 'text-blue-500';
+                                    
+                                    return `
+                                        <div class="flex items-start space-x-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                                            <div class="bg-${activity.type === 'success' ? 'green' : activity.type === 'warning' ? 'orange' : 'blue'}-500/10 p-2 rounded-lg">
+                                                <i class="fas ${activity.icon} ${iconColor}"></i>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-gray-900 dark:text-white font-medium">${activity.title}</p>
+                                                <p class="text-gray-600 dark:text-gray-400 text-sm">${activity.message}</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">${activity.time}</p>
+                                            </div>
+                                            <button onclick="showNotification('Aktivite', 'Aktivite detayları görüntüleniyor', 'info')" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm whitespace-nowrap">
+                                                Görüntüle
+                                            </button>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Main render function
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!AppState.currentUser) {
+                app.innerHTML = LoginComponent();
+                return;
+            }
+            
+            let content = '';
+            
+            // Role-based content rendering
+            if (AppState.currentUser.role === 'admin') {
+                if (AppState.currentPage === 'suppliers') {
+                    content = Suppliers();
+                } else if (AppState.currentPage === 'requests') {
+                    content = Requests();
+                } else {
+                    content = Admin();
+                }
+            } else {
+                content = Dashboard();
+            }
+            
+            app.innerHTML = HeaderComponent() + content;
+        }
+
+        // Initialize app
+        function init() {
+            checkAuth();
+            document.documentElement.classList.toggle('dark', AppState.isDarkMode);
+            render();
+            
+            // Simulate notifications
+            setTimeout(() => {
+                showNotification('Yeni Teklif Aldınız!', 'Ultrason jeli talebinize 2 tedarikçi cevap verdi.', 'success');
+            }, 3000);
+            
+            setTimeout(() => {
+                showNotification('Süre Uyarısı', 'EKG Kağıdı talebiniz için 18 saat kaldı.', 'warning');
+            }, 8000);
+            
+            setTimeout(() => {
+                showNotification('Sipariş Güncellendi', 'Medikal Tedarik A.Ş. siparişinizi hazırladı.', 'info');
+            }, 13000);
+            
+            // Update countdowns every second
+            setInterval(() => {
+                const countdownElements = document.querySelectorAll('.countdown-text');
+                if (countdownElements.length > 0) {
+                    render();
+                }
+            }, 1000);
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
