@@ -7,73 +7,47 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     :root{
-      --background:hsl(0 0% 100%);
-      --foreground:hsl(222 84% 5%);
-      --card:hsl(0 0% 100%);
-      --card-foreground:hsl(222 84% 5%);
-      --primary:hsl(217 91% 60%);
-      --primary-foreground:hsl(0 0% 100%);
-      --secondary:hsl(210 40% 98%);
-      --secondary-foreground:hsl(222 84% 5%);
-      --muted:hsl(210 40% 98%);
-      --muted-foreground:hsl(215 20% 35%);
-      --border:hsl(214 32% 91%);
-      --input:hsl(214 32% 91%);
-      --ring:hsl(217 91% 60%);
+      --background:hsl(0 0% 100%); --foreground:hsl(222 84% 5%);
+      --card:hsl(0 0% 100%); --card-foreground:hsl(222 84% 5%);
+      --primary:hsl(217 91% 60%); --primary-foreground:hsl(0 0% 100%);
+      --secondary:hsl(210 40% 98%); --secondary-foreground:hsl(222 84% 5%);
+      --muted:hsl(210 40% 98%); --muted-foreground:hsl(215 20% 35%);
+      --border:hsl(214 32% 91%); --input:hsl(214 32% 91%); --ring:hsl(217 91% 60%);
     }
     .dark{
-      --background:hsl(222 84% 5%);
-      --foreground:hsl(213 31% 91%);
-      --card:hsl(222 84% 5%);
-      --card-foreground:hsl(213 31% 91%);
-      --primary:hsl(217 91% 60%);
-      --primary-foreground:hsl(222 84% 5%);
-      --secondary:hsl(222 47% 11%);
-      --secondary-foreground:hsl(210 40% 98%);
-      --muted:hsl(217 32% 17%);
-      --muted-foreground:hsl(215 20% 65%);
-      --border:hsl(217 32% 17%);
-      --input:hsl(217 32% 17%);
+      --background:hsl(222 84% 5%); --foreground:hsl(213 31% 91%);
+      --card:hsl(222 84% 5%); --card-foreground:hsl(213 31% 91%);
+      --primary:hsl(217 91% 60%); --primary-foreground:hsl(222 84% 5%);
+      --secondary:hsl(222 47% 11%); --secondary-foreground:hsl(210 40% 98%);
+      --muted:hsl(217 32% 17%); --muted-foreground:hsl(215 20% 65%);
+      --border:hsl(217 32% 17%); --input:hsl(217 32% 17%);
     }
-
     body{font-family:'Inter',system-ui,sans-serif}
     .dark{color-scheme:dark}
     .dark body{background-color:#0f172a;color:#f1f5f9}
-    .dark h1,.dark h2,.dark h3,.dark h4,.dark h5,.dark h6{color:#fff}
+    .dark h1,.dark h2,.dark h3{color:#fff}
     .dark p,.dark span,.dark div{color:#e2e8f0}
-    .dark .text-muted-foreground{color:#94a3b8}
-    .dark .text-foreground{color:#fff}
-    .dark .bg-card{background-color:#1e293b;border-color:#334155}
-    .dark .border-border{border-color:#334155}
-    .dark input,.dark select,.dark textarea{background-color:#374151;border-color:#4b5563;color:#fff}
-
+    .dark input,.dark select,.dark textarea{background:#374151;border-color:#4b5563;color:#fff}
     .pulse-animation{animation:pulse 2s infinite}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-    .countdown-text{font-feature-settings:"tnum";font-variant-numeric:tabular-nums;font-family:'Courier New',monospace}
-    .badge-glow{box-shadow:0 0 20px rgba(59,130,246,.3)}
-    .rating-star{color:#fbbf24;text-shadow:0 0 2px rgba(251,191,36,.3)}
-    .notification-enter{transform:translateX(100%);transition:transform .3s ease-in-out}
-    .notification-show{transform:translateX(0)}
-    .card-hover:hover{box-shadow:0 10px 25px rgba(0,0,0,.1);transform:translateY(-2px);transition:all .3s ease}
+    .countdown-text{font-variant-numeric:tabular-nums;font-family:'Courier New',monospace}
+    .card-hover:hover{box-shadow:0 10px 25px rgba(0,0,0,.1);transform:translateY(-2px);transition:all .25s}
+    .modal-backdrop{background:rgba(15,23,42,.6)}
   </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
   <div id="app"></div>
 
   <script>
-    // ============ Yardımcı ============
-    const uid = (p='u') => p + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+    const uid = (p='u') => p + Math.random().toString(36).slice(2,8) + Date.now().toString(36);
 
-    // ============ Global State ============
     const AppState = {
       currentUser: null,
       isDarkMode: localStorage.getItem('darkMode') === 'true',
       notifications: JSON.parse(localStorage.getItem('notifications') || '[]'),
 
-      // Varsayılan kullanıcı seti (eğer localStorage'da yoksa yüklenecek)
       seedUsers: [
         { id:'admin1',    username:'admin',     password:'admin123',    role:'admin',   name:'Admin User',       location:'İstanbul', email:'admin@platform.com',   phone:'+90 212 555 0001' },
         { id:'clinic1',   username:'clinic1',   password:'clinic123',   role:'clinic',  name:'Özel Tıp Merkezi',  location:'İstanbul', email:'clinic@ozel.com',       phone:'+90 212 555 0002' },
@@ -83,126 +57,45 @@
       users: [],
 
       suppliers: [
-        { id:'supplier1', userId:'supplier1', companyName:'Medikal Tedarik A.Ş.',
-          location:'İstanbul, Türkiye', description:'Tıbbi sarf malzemeleri ve ekipman tedariki',
-          verified:true, badges:['Hızlı Yanıtlayan','En Çok Teklif Kazanan','Belgeleri Onaylı'],
-          totalOffers:45, wonOffers:32, averageRating:4.7, totalRatings:134, averageResponseTime:2.5 },
-        { id:'supplier2', userId:'supplier2', companyName:'TıpTech Solutions',
-          location:'Ankara, Türkiye', description:'Görüntüleme cihazları ve laboratuvar ekipmanları',
-          verified:true, badges:['Belgeleri Onaylı','Kalite Güvencesi'],
-          totalOffers:28, wonOffers:18, averageRating:4.2, totalRatings:87, averageResponseTime:4.1 }
+        { id:'supplier1', userId:'supplier1', companyName:'Medikal Tedarik A.Ş.', location:'İstanbul, Türkiye', description:'Tıbbi sarf malzemeleri ve ekipman tedariki', verified:true,  badges:['Hızlı Yanıtlayan','En Çok Teklif Kazanan','Belgeleri Onaylı'], totalOffers:45, wonOffers:32, averageRating:4.7, totalRatings:134, averageResponseTime:2.5 },
+        { id:'supplier2', userId:'supplier2', companyName:'TıpTech Solutions',    location:'Ankara, Türkiye',   description:'Görüntüleme cihazları ve laboratuvar ekipmanları',          verified:true,  badges:['Belgeleri Onaylı','Kalite Güvencesi'], totalOffers:28, wonOffers:18, averageRating:4.2, totalRatings:87, averageResponseTime:4.1 }
       ],
 
       requests: [
-        { id:'req1', clinicId:'clinic1', title:'Ultrason Jeli - 50 Adet', description:'Ultrason muayenesi için kullanılacak jel',
-          category:'Tıbbi Sarf Malzemesi', quantity:50, unit:'adet',
-          deadline:new Date(Date.now()+36*60*60*1000+42*60*1000+15*1000),
-          status:'active', location:'İstanbul', budgetMin:2000, budgetMax:4000, views:23,
+        { id:'req1', clinicId:'clinic1', title:'Ultrason Jeli - 50 Adet', description:'Ultrason muayenesi için kullanılacak jel', category:'Tıbbi Sarf Malzemesi', quantity:50, unit:'adet', deadline:new Date(Date.now()+36*60*60*1000), status:'active', location:'İstanbul', budgetMin:2000, budgetMax:4000, views:23,
           offers:[{ id:'offer1', supplierId:'supplier1', price:2800, description:'Premium kalite ultrason jeli', deliveryTime:'2-3 gün', status:'pending' }]}
         ,
-        { id:'req2', clinicId:'clinic1', title:'EKG Kağıdı - 100 Adet', description:'Kardiyoloji kliniği için EKG kağıdı',
-          category:'Tıbbi Sarf Malzemesi', quantity:100, unit:'adet',
-          deadline:new Date(Date.now()+18*60*60*1000+25*60*1000+42*1000),
-          status:'active', location:'Ankara', budgetMin:1500, budgetMax:2500, views:41, offers:[] }
+        { id:'req2', clinicId:'clinic1', title:'EKG Kağıdı - 100 Adet', description:'Kardiyoloji kliniği için EKG kağıdı', category:'Tıbbi Sarf Malzemesi', quantity:100, unit:'adet', deadline:new Date(Date.now()+18*60*60*1000), status:'active', location:'Ankara', budgetMin:1500, budgetMax:2500, views:41, offers:[] }
       ],
 
       orders:[{ id:'order1', requestId:'req1', offerId:'offer1', clinicId:'clinic1', supplierId:'supplier1', status:'preparing', totalAmount:2800, createdAt:new Date() }],
 
       benchmarkPrices:[
         { productName:'Ultrason Jeli', category:'Tıbbi Sarf Malzemesi', minPrice:50, maxPrice:120, averagePrice:85 },
-        { productName:'EKG Kağıdı',    category:'Tıbbi Sarf Malzemesi', minPrice:180, maxPrice:250, averagePrice:215 },
-        { productName:'X-Ray Filmi',   category:'Görüntüleme',          minPrice:300, maxPrice:500, averagePrice:400 },
-        { productName:'Steril Eldiven',category:'Tıbbi Sarf Malzemesi', minPrice:80, maxPrice:150, averagePrice:115 }
+        { productName:'EKG Kağıdı',    category:'Tıbbi Sarf Malzemesi', minPrice:180, maxPrice:250, averagePrice:215 }
       ],
 
       analytics:{ totalRequests:2, mostPopularCategory:{name:'Tıbbi Sarf Malzemesi',count:2}, activeSuppliers:2, averageResponseTime:3.3 },
 
+      // UI
       currentPage:'dashboard',
-      categoryFilter:'all',
-      locationFilter:'all',
-      searchQuery:'',
-      statusFilter:'all'
+      categoryFilter:'all', locationFilter:'all', searchQuery:'', statusFilter:'all',
+
+      // Modallar
+      showNewRequestModal:false,
+      showOfferModal:false,
+      offerForRequestId:null,
     };
 
-    // ---------- Persist helpers ----------
+    // --------- Persist helpers ----------
     function loadUsers(){
       const stored = localStorage.getItem('users');
-      if(stored){
-        try{ AppState.users = JSON.parse(stored); }
-        catch{ AppState.users = [...AppState.seedUsers]; }
-      }else{
-        AppState.users = [...AppState.seedUsers];
-        localStorage.setItem('users', JSON.stringify(AppState.users));
-      }
+      AppState.users = stored ? JSON.parse(stored) : [...AppState.seedUsers];
+      if(!stored) localStorage.setItem('users', JSON.stringify(AppState.users));
     }
     function saveUsers(){ localStorage.setItem('users', JSON.stringify(AppState.users)); }
 
-    // ---------- Auth ----------
-    function login(username, password){
-      const user = AppState.users.find(u=>u.username===username && u.password===password);
-      if(user){
-        AppState.currentUser = user;
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        return true;
-      }
-      return false;
-    }
-    function logout(){
-      AppState.currentUser=null;
-      localStorage.removeItem('currentUser');
-      render();
-    }
-    function checkAuth(){
-      const storedUser = localStorage.getItem('currentUser');
-      if(storedUser){ AppState.currentUser = JSON.parse(storedUser); }
-    }
-
-    // ---------- Register ----------
-    function register({name, username, email, password, password2, role, location, phone}){
-      // Basit doğrulamalar
-      if(!name || !username || !email || !password || !password2 || !role){
-        showNotification('Eksik Alan', 'Lütfen tüm zorunlu alanları doldurun.', 'warning'); return false;
-      }
-      if(password !== password2){ showNotification('Şifre Uyuşmuyor', 'Şifreler aynı olmalı.', 'error'); return false; }
-      if(password.length < 6){ showNotification('Zayıf Şifre', 'Şifre en az 6 karakter olmalı.', 'error'); return false; }
-      if(!/^[a-z0-9_.-]{3,}$/i.test(username)){ showNotification('Kullanıcı Adı Hatalı', 'Sadece harf, rakam, nokta, tire ve alt çizgi kullanın (min 3).', 'error'); return false; }
-      if(AppState.users.some(u=>u.username.toLowerCase()===username.toLowerCase())){
-        showNotification('Kullanıcı Adı Kullanımda', 'Farklı bir kullanıcı adı deneyin.', 'error'); return false;
-      }
-
-      const id = uid(role[0]);
-      const newUser = { id, username, password, role, name, location: location||'Türkiye', email, phone: phone||'' };
-      AppState.users.push(newUser);
-      saveUsers();
-
-      // Tedarikçi ise vitrine basit bir profil ekleyelim (opsiyonel)
-      if(role==='supplier'){
-        AppState.suppliers.push({
-          id, userId:id, companyName:name,
-          location: location||'Türkiye',
-          description:'Yeni tedarikçi',
-          verified:false, badges:['Yeni'],
-          totalOffers:0, wonOffers:0, averageRating:0, totalRatings:0, averageResponseTime:0
-        });
-      }
-
-      // Otomatik giriş
-      AppState.currentUser = newUser;
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
-      showNotification('Kayıt Başarılı', 'Hesabınız oluşturuldu ve giriş yapıldı.', 'success');
-      render();
-      return true;
-    }
-
-    // ---------- Tema ----------
-    function toggleDarkMode(){
-      AppState.isDarkMode = !AppState.isDarkMode;
-      localStorage.setItem('darkMode', AppState.isDarkMode);
-      document.documentElement.classList.toggle('dark', AppState.isDarkMode);
-      render();
-    }
-
-    // ---------- Bildirim ----------
+    // --------- Notifications ----------
     function showNotification(title, message, type='info'){
       const n = { id: Date.now().toString(), title, message, type, timestamp: new Date().toISOString() };
       AppState.notifications.unshift(n);
@@ -211,207 +104,178 @@
       displayNotificationPopup(n);
     }
     function displayNotificationPopup(n){
-      const popup = document.createElement('div');
-      popup.className = 'fixed top-20 right-4 z-50 max-w-sm w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg notification-enter';
-      const iconClass = { success:'fa-check-circle text-green-500', warning:'fa-exclamation-triangle text-yellow-500', error:'fa-exclamation-circle text-red-500', info:'fa-info-circle text-blue-500' };
-      popup.innerHTML = `
+      const map = { success:'fa-check-circle text-green-500', warning:'fa-exclamation-triangle text-yellow-500', error:'fa-exclamation-circle text-red-500', info:'fa-info-circle text-blue-500' };
+      const el = document.createElement('div');
+      el.className = 'fixed top-20 right-4 z-50 max-w-sm w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg notification-enter';
+      el.innerHTML = `
         <div class="p-4">
           <div class="flex items-start space-x-3">
-            <i class="fas ${iconClass[n.type]}"></i>
+            <i class="fas ${map[n.type]}"></i>
             <div class="flex-1 min-w-0">
               <h4 class="font-medium text-gray-900 dark:text-white">${n.title}</h4>
               <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${n.message}</p>
             </div>
-            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"><i class="fas fa-times"></i></button>
+            <button onclick="this.closest('div.fixed').remove()" class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"><i class="fas fa-times"></i></button>
           </div>
         </div>`;
-      document.body.appendChild(popup);
-      setTimeout(()=>popup.classList.add('notification-show'),100);
-      setTimeout(()=>popup.remove(),5000);
+      document.body.appendChild(el);
+      setTimeout(()=>el.classList.add('notification-show'),100);
+      setTimeout(()=>el.remove(),5000);
     }
 
-    // ---------- Sayaç ----------
+    // --------- Theme ----------
+    function toggleDarkMode(){
+      AppState.isDarkMode = !AppState.isDarkMode;
+      localStorage.setItem('darkMode', AppState.isDarkMode);
+      document.documentElement.classList.toggle('dark', AppState.isDarkMode);
+      render();
+    }
+
+    // --------- Auth ----------
+    function login(username, password){
+      const u = AppState.users.find(u=>u.username===username && u.password===password);
+      if(!u) return false;
+      AppState.currentUser = u;
+      AppState.currentPage = 'dashboard';            // ← login sonrası hep dashboard
+      localStorage.setItem('currentUser', JSON.stringify(u));
+      return true;
+    }
+    function logout(){ AppState.currentUser=null; localStorage.removeItem('currentUser'); render(); }
+    function checkAuth(){ const s=localStorage.getItem('currentUser'); if(s){ AppState.currentUser=JSON.parse(s);} }
+
+    // --------- Register ----------
+    function register({name, username, email, password, password2, role, location, phone}){
+      if(!name||!username||!email||!password||!password2||!role){ showNotification('Eksik Alan','Lütfen tüm alanları doldurun.','warning'); return false; }
+      if(password!==password2){ showNotification('Şifre Uyuşmuyor','Şifreler aynı olmalı.','error'); return false; }
+      if(password.length<6){ showNotification('Zayıf Şifre','En az 6 karakter.','error'); return false; }
+      if(!/^[a-z0-9_.-]{3,}$/i.test(username)){ showNotification('Kullanıcı Adı Hatalı','Harf, rakam, nokta, tire, alt çizgi (min 3).','error'); return false; }
+      if(AppState.users.some(u=>u.username.toLowerCase()===username.toLowerCase())){ showNotification('Kullanıcı Adı Kullanımda','Başka bir kullanıcı adı deneyin.','error'); return false; }
+
+      const id = uid(role[0]);
+      const newUser = { id, username, password, role, name, location: location||'Türkiye', email, phone: phone||'' };
+      AppState.users.push(newUser); saveUsers();
+
+      if(role==='supplier'){
+        AppState.suppliers.push({ id, userId:id, companyName:name, location:location||'Türkiye', description:'Yeni tedarikçi', verified:false, badges:['Yeni'], totalOffers:0, wonOffers:0, averageRating:0, totalRatings:0, averageResponseTime:0 });
+      }
+
+      AppState.currentUser = newUser;                      // otomatik giriş
+      AppState.currentPage = 'dashboard';                  // ← kayıt sonrası hep dashboard
+      localStorage.setItem('currentUser', JSON.stringify(newUser));
+      showNotification('Kayıt Başarılı','Hesabınız oluşturuldu ve giriş yapıldı.','success');
+      render();
+      return true;
+    }
+
+    // --------- Filters / Page ---------
+    const setCategoryFilter=v=>{AppState.categoryFilter=v; render();};
+    const setLocationFilter=v=>{AppState.locationFilter=v; render();};
+    const setSearchQuery=v=>{AppState.searchQuery=v; render();};
+    const setStatusFilter=v=>{AppState.statusFilter=v; render();};
+    const setCurrentPage=p=>{AppState.currentPage=p; render();};
+
+    // --------- Utilities ----------
     function formatCountdown(deadline){
-      const now=new Date(); const diff=new Date(deadline)-now;
-      if(diff<=0) return '<span class="text-red-500 font-bold countdown-text">Süre Doldu</span>';
-      const h=Math.floor(diff/3_600_000);
-      const m=Math.floor((diff%3_600_000)/60_000);
-      const s=Math.floor((diff%60_000)/1000);
+      const d = new Date(deadline) - new Date();
+      if(d<=0) return '<span class="text-red-500 font-bold countdown-text">Süre Doldu</span>';
+      const h=Math.floor(d/3_600_000), m=Math.floor(d%3_600_000/60_000), s=Math.floor(d%60_000/1000);
       return `<span class="countdown-text text-blue-600 dark:text-blue-400 font-bold">${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</span>`;
     }
-
-    // ---------- Yıldız ----------
-    function renderStarRating(rating,totalRatings){
-      const full=Math.floor(rating); const half=rating%1>=0.5; const empty=5-full-(half?1:0);
-      let stars=''; for(let i=0;i<full;i++) stars+='<i class="fas fa-star rating-star"></i>';
-      if(half) stars+='<i class="fas fa-star-half-alt rating-star"></i>';
-      for(let i=0;i<empty;i++) stars+='<i class="far fa-star text-gray-400 dark:text-gray-500"></i>';
-      return `<div class="flex items-center space-x-2 mt-2"><div class="flex space-x-1">${stars}</div>${totalRatings>0?`<span class="text-sm text-gray-600 dark:text-gray-400">(${rating.toFixed(1)}) ${totalRatings} değerlendirme</span>`:''}</div>`;
+    function renderStarRating(r, n){
+      const full=Math.floor(r), half=r%1>=.5, empty=5-full-(half?1:0);
+      let stars=''; for(let i=0;i<full;i++) stars+='<i class="fas fa-star text-yellow-400"></i>'; if(half) stars+='<i class="fas fa-star-half-alt text-yellow-400"></i>'; for(let i=0;i<empty;i++) stars+='<i class="far fa-star text-gray-400"></i>';
+      return `<div class="flex items-center space-x-2 mt-2"><div class="flex space-x-1">${stars}</div>${n>0?`<span class="text-sm text-gray-600 dark:text-gray-400">(${r.toFixed(1)}) ${n} değerlendirme</span>`:''}</div>`;
     }
 
-    // ---------- Sipariş Durumu ----------
-    function updateOrderStatus(orderId,status){
-      const order=AppState.orders.find(o=>o.id===orderId);
-      if(order){ order.status=status; showNotification('Durum Güncellendi', `Sipariş durumu "${status}" olarak güncellendi.`, 'success'); render(); }
-    }
-
-    // ---------- Filtreler ----------
-    function setCategoryFilter(v){ AppState.categoryFilter=v; render(); }
-    function setLocationFilter(v){ AppState.locationFilter=v; render(); }
-    function setSearchQuery(v){ AppState.searchQuery=v; render(); }
-    function setStatusFilter(v){ AppState.statusFilter=v; render(); }
-    function setCurrentPage(p){ AppState.currentPage=p; render(); }
-
-    // ============ UI Bileşenleri ============
-    function LoginComponent(){
+    // ======== MODALLAR ========
+    function NewRequestModal(){
+      if(!AppState.showNewRequestModal) return '';
       return `
-      <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8 w-full max-w-md">
-          <div class="text-center mb-8">
-            <div class="bg-blue-500/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <i class="fas fa-heartbeat text-2xl text-blue-500"></i>
-            </div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tıbbi Tedarik Pazaryeri</h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-2">Giriş yapın veya kayıt olun</p>
+      <div class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4" role="dialog" aria-modal="true">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-2xl rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white"><i class="fas fa-plus-circle mr-2 text-blue-600"></i>Yeni Talep Oluştur</h3>
+            <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" onclick="closeNewRequestModal()"><i class="fas fa-times"></i></button>
           </div>
-
-          <div class="tabs">
-            <div class="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1 mb-4">
-              <button onclick="showTab('login')" id="login-tab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400">Giriş Yap</button>
-              <button onclick="showTab('demo')"  id="demo-tab"  class="flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Demo Hesaplar</button>
-              <button onclick="showTab('register')" id="register-tab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Kayıt Ol</button>
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label class="text-sm text-gray-600 dark:text-gray-300">Başlık</label><input id="nr_title" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"/></div>
+            <div><label class="text-sm text-gray-600 dark:text-gray-300">Kategori</label>
+              <select id="nr_category" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+                <option>Tıbbi Sarf Malzemesi</option>
+                <option>Görüntüleme</option>
+                <option>Laboratuvar</option>
+              </select>
             </div>
-
-            <!-- LOGIN -->
-            <div id="login-content" class="tab-content">
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kullanıcı Adı</label>
-                  <input id="username" type="text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="Kullanıcı adınız">
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Şifre</label>
-                  <input id="password" type="password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="Şifreniz" onkeypress="if(event.key==='Enter') attemptLogin()">
-                </div>
-                <button onclick="attemptLogin()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">Giriş Yap</button>
-              </div>
-            </div>
-
-            <!-- DEMO -->
-            <div id="demo-content" class="tab-content hidden">
-              <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">Demo hesaplarından birini seçin:</p>
-              <div class="space-y-3">
-                <button onclick="quickLogin('clinic1','clinic123')" class="w-full flex items-center justify-start space-x-3 p-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                  <i class="fas fa-hospital text-blue-500"></i><span class="text-gray-900 dark:text-white">Klinik Hesabı (clinic1)</span>
-                </button>
-                <button onclick="quickLogin('supplier1','supplier123')" class="w-full flex items-center justify-start space-x-3 p-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                  <i class="fas fa-truck text-green-500"></i><span class="text-gray-900 dark:text-white">Tedarikçi Hesabı (supplier1)</span>
-                </button>
-                <button onclick="quickLogin('admin','admin123')" class="w-full flex items-center justify-start space-x-3 p-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                  <i class="fas fa-cog text-purple-500"></i><span class="text-gray-900 dark:text-white">Admin Hesabı (admin)</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- REGISTER -->
-            <div id="register-content" class="tab-content hidden">
-              <div class="space-y-3">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ad / Firma Adı</label>
-                    <input id="reg_name" type="text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="Örn. Özel Tıp Merkezi">
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kullanıcı Adı</label>
-                    <input id="reg_username" type="text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="Örn. klinikXYZ">
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">E-posta</label>
-                    <input id="reg_email" type="email" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="mail@ornek.com">
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Telefon (ops.)</label>
-                    <input id="reg_phone" type="text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="+90 ...">
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Şehir / Konum</label>
-                    <input id="reg_location" type="text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="İstanbul, Türkiye">
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rol</label>
-                    <select id="reg_role" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                      <option value="">Seçiniz</option>
-                      <option value="clinic">Klinik</option>
-                      <option value="supplier">Tedarikçi</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Şifre</label>
-                    <input id="reg_password" type="password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="En az 6 karakter">
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Şifre (Tekrar)</label>
-                    <input id="reg_password2" type="password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="Tekrar">
-                  </div>
-                </div>
-
-                <button onclick="attemptRegister()" class="w-full bg-emerald-600 text-white py-2 px-4 rounded-md hover:bg-emerald-700 transition-colors">
-                  Kayıt Ol ve Giriş Yap
-                </button>
-              </div>
-            </div>
+            <div><label class="text-sm text-gray-600 dark:text-gray-300">Miktar</label><input id="nr_qty" type="number" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" value="1"/></div>
+            <div><label class="text-sm text-gray-600 dark:text-gray-300">Birim</label><input id="nr_unit" value="adet" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"/></div>
+            <div class="md:col-span-2"><label class="text-sm text-gray-600 dark:text-gray-300">Açıklama</label><textarea id="nr_desc" rows="3" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"></textarea></div>
+            <div><label class="text-sm text-gray-600 dark:text-gray-300">Bütçe Min (₺)</label><input id="nr_bmin" type="number" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" value="1000"/></div>
+            <div><label class="text-sm text-gray-600 dark:text-gray-300">Bütçe Max (₺)</label><input id="nr_bmax" type="number" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" value="5000"/></div>
+            <div class="md:col-span-2"><label class="text-sm text-gray-600 dark:text-gray-300">Son Tarih</label><input id="nr_deadline" type="datetime-local" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"/></div>
+            <div class="md:col-span-2"><label class="text-sm text-gray-600 dark:text-gray-300">Şehir</label><input id="nr_location" value="İstanbul" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"/></div>
+          </div>
+          <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-end gap-3">
+            <button class="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300" onclick="closeNewRequestModal()">Vazgeç</button>
+            <button class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700" onclick="createNewRequest()">Kaydet</button>
           </div>
         </div>
       </div>`;
     }
-
-    function showTab(name){
-      const ids=['login','demo','register'];
-      ids.forEach(k=>{
-        document.getElementById(`${k}-content`)?.classList.toggle('hidden', name!==k);
-        const tab = document.getElementById(`${k}-tab`);
-        if(!tab) return;
-        tab.className = name===k
-          ? 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400'
-          : 'flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300';
-      });
+    function openNewRequestModal(){ AppState.showNewRequestModal=true; render(); }
+    function closeNewRequestModal(){ AppState.showNewRequestModal=false; render(); }
+    function createNewRequest(){
+      const t = (id)=>document.getElementById(id).value;
+      const title=t('nr_title').trim(), category=t('nr_category'), qty=+t('nr_qty')||1, unit=t('nr_unit').trim()||'adet', desc=t('nr_desc').trim();
+      const bmin=+t('nr_bmin')||0, bmax=+t('nr_bmax')||0, loc=t('nr_location').trim()||'Türkiye';
+      const dl = t('nr_deadline') ? new Date(t('nr_deadline')) : new Date(Date.now()+48*60*60*1000);
+      if(!title){ showNotification('Eksik Bilgi','Başlık zorunlu.','warning'); return; }
+      const req = { id:uid('r'), clinicId:AppState.currentUser.id, title, description:desc, category, quantity:qty, unit, deadline:dl, status:'active', location:loc, budgetMin:bmin, budgetMax:bmax, views:0, offers:[] };
+      AppState.requests.unshift(req);
+      AppState.analytics.totalRequests++;
+      AppState.showNewRequestModal=false;
+      showNotification('Talep Oluşturuldu','Yeni talep listeye eklendi.','success');
+      render();
     }
 
-    function attemptLogin(){
-      const u=document.getElementById('username').value;
-      const p=document.getElementById('password').value;
-      if(login(u,p)) render();
-      else showNotification('Giriş Başarısız', 'Kullanıcı adı veya şifre hatalı', 'error');
+    function OfferModal(){
+      if(!AppState.showOfferModal) return '';
+      const req = AppState.requests.find(r=>r.id===AppState.offerForRequestId);
+      if(!req) return '';
+      return `
+      <div class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-xl rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white"><i class="fas fa-hand-holding-dollar mr-2 text-emerald-600"></i>${req.title} için Teklif Ver</h3>
+            <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" onclick="closeOfferModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label class="text-sm text-gray-600 dark:text-gray-300">Fiyat (₺)</label><input id="of_price" type="number" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" value="${req.budgetMin || 0}"/></div>
+            <div><label class="text-sm text-gray-600 dark:text-gray-300">Teslim Süresi</label><input id="of_delivery" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" placeholder="Örn. 2-3 gün"/></div>
+            <div class="md:col-span-2"><label class="text-sm text-gray-600 dark:text-gray-300">Açıklama</label><textarea id="of_desc" rows="3" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" placeholder="Ürün kalitesi, marka, ödeme koşulu vb."></textarea></div>
+          </div>
+          <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-end gap-3">
+            <button class="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300" onclick="closeOfferModal()">Vazgeç</button>
+            <button class="px-4 py-2 rounded-md bg-emerald-600 text-white hover:bg-emerald-700" onclick="submitOffer()">Teklifi Gönder</button>
+          </div>
+        </div>
+      </div>`;
     }
-    function quickLogin(u,p){
-      document.getElementById('username').value=u;
-      document.getElementById('password').value=p;
-      setTimeout(()=>{ if(login(u,p)) render(); },100);
-    }
-    function attemptRegister(){
-      const payload = {
-        name: document.getElementById('reg_name').value.trim(),
-        username: document.getElementById('reg_username').value.trim(),
-        email: document.getElementById('reg_email').value.trim(),
-        phone: document.getElementById('reg_phone').value.trim(),
-        location: document.getElementById('reg_location').value.trim(),
-        role: document.getElementById('reg_role').value,
-        password: document.getElementById('reg_password').value,
-        password2: document.getElementById('reg_password2').value
-      };
-      register(payload);
+    function openOfferModal(reqId){ AppState.offerForRequestId=reqId; AppState.showOfferModal=true; render(); }
+    function closeOfferModal(){ AppState.showOfferModal=false; AppState.offerForRequestId=null; render(); }
+    function submitOffer(){
+      const req = AppState.requests.find(r=>r.id===AppState.offerForRequestId);
+      if(!req){ showNotification('Hata','Talep bulunamadı.','error'); return; }
+      const price = +document.getElementById('of_price').value || 0;
+      const deliveryTime = document.getElementById('of_delivery').value.trim() || 'Belirtilmedi';
+      const description = document.getElementById('of_desc').value.trim();
+      if(price<=0){ showNotification('Eksik Bilgi','Geçerli bir fiyat girin.','warning'); return; }
+      req.offers.push({ id:uid('o'), supplierId:AppState.currentUser.id, price, description, deliveryTime, status:'pending' });
+      AppState.showOfferModal=false; AppState.offerForRequestId=null;
+      showNotification('Teklif Gönderildi','Teklifiniz talebe eklendi.','success');
+      render();
     }
 
-    // ---------- Header ----------
+    // ======== COMPONENTS ========
     function HeaderComponent(){
       const role=AppState.currentUser.role;
       const roleDisplay = role==='supplier' ? 'Tedarikçi' : role==='clinic' ? 'Klinik' : 'Admin';
@@ -423,14 +287,11 @@
             <h1 class="text-xl font-bold text-gray-900 dark:text-white">Tıbbi Tedarik Pazaryeri</h1>
           </div>
           <nav class="flex items-center space-x-6">
-            <div class="flex space-x-4">
+            <div class="flex space-x-2">
+              <button onclick="setCurrentPage('dashboard')" class="${AppState.currentPage==='dashboard'?'bg-blue-600 text-white':'text-gray-600 dark:text-gray-300 hover:text-blue-600'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-chart-bar mr-2"></i>Dashboard</button>
               ${role==='admin' ? `
-                <button onclick="setCurrentPage('dashboard')" class="${AppState.currentPage==='dashboard'?'bg-blue-600 text-white':'text-gray-600 dark:text-gray-300 hover:text-blue-600'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-chart-bar mr-2"></i>Dashboard</button>
                 <button onclick="setCurrentPage('requests')"  class="${AppState.currentPage==='requests' ?'bg-blue-600 text-white':'text-gray-600 dark:text-gray-300 hover:text-blue-600'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-clipboard-list mr-2"></i>Talepler</button>
-                <button onclick="setCurrentPage('suppliers')" class="${AppState.currentPage==='suppliers'?'bg-blue-600 text-white':'text-gray-600 dark:text-gray-300 hover:text-blue-600'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-users mr-2"></i>Tedarikçiler</button>
-              `:`
-                <button onclick="setCurrentPage('dashboard')" class="${AppState.currentPage==='dashboard'?'bg-blue-600 text-white':'text-gray-600 dark:text-gray-300 hover:text-blue-600'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-chart-bar mr-2"></i>Dashboard</button>
-              `}
+                <button onclick="setCurrentPage('suppliers')" class="${AppState.currentPage==='suppliers'?'bg-blue-600 text-white':'text-gray-600 dark:text-gray-300 hover:text-blue-600'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-users mr-2"></i>Tedarikçiler</button>` : '' }
             </div>
             <button onclick="toggleDarkMode()" class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"><i class="fas ${AppState.isDarkMode?'fa-sun':'fa-moon'}"></i></button>
             <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
@@ -443,7 +304,6 @@
       </header>`;
     }
 
-    // ---------- Dashboard/Pulse/Request/Supplier (mevcut bileşenlerin aynısı) ----------
     function MarketplacePulse(){
       const d=AppState.analytics;
       return `
@@ -462,7 +322,7 @@
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-gray-600 dark:text-gray-400 text-sm">${c.label}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">${c.label}</p>
                   <p class="text-2xl font-bold text-gray-900 dark:text-white">${c.value}</p>
                   <p class="text-xs text-gray-600 dark:text-gray-400">${c.sub}</p>
                 </div>
@@ -473,97 +333,62 @@
       </div>`;
     }
 
-    function RequestCard(request){
-      const clinic=AppState.users.find(u=>u.id===request.clinicId) || {name:'Bilinmeyen Klinik'};
-      const isExpired=new Date(request.deadline)<new Date();
-      const hasOffers=request.offers.length>0;
-      const benchmark=AppState.benchmarkPrices.find(bp=>request.title.includes(bp.productName));
+    function RequestCard(r){
+      const clinic=AppState.users.find(u=>u.id===r.clinicId) || {name:'Klinik'};
+      const isExpired=new Date(r.deadline)<new Date();
+      const hasOffers=r.offers.length>0;
       const statusColor=(s,has)=> s==='expired' ? 'bg-red-500/10 text-red-500' : (has ? 'bg-green-500/10 text-green-500' : 'bg-orange-500/10 text-orange-500');
       const statusText=(s,has)=> s==='expired' ? 'Süresi Doldu' : (has ? 'Teklifler Alındı' : 'Teklif Bekliyor');
+
+      // Tedarikçi ise "Teklif Ver" butonu; Klinik ise "Teklifleri Gör"
+      const role = AppState.currentUser?.role;
+      const actionBtn = role==='supplier'
+        ? `<button onclick="openOfferModal('${r.id}')" class="px-3 py-1 bg-emerald-600 text-white rounded text-sm hover:bg-emerald-700">Teklif Ver</button>`
+        : `<button onclick="showNotification('Detaylar','Talep detayları açıldı','info')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">${hasOffers?'Teklifleri Gör':'Detayları Görüntüle'}</button>`;
+
       return `
-      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-lg transition-shadow card-hover p-6">
+      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm card-hover p-6">
         <div class="flex items-start justify-between mb-4">
           <div class="flex-1">
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">${request.title}</h3>
-            <div class="flex items-center space-x-1 text-gray-600 dark:text-gray-400 text-sm mb-3"><i class="fas fa-map-marker-alt"></i><span>${clinic.name} - ${request.location}</span></div>
-            ${benchmark ? `
-              <div class="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
-                <p class="text-xs text-gray-600 dark:text-gray-400 mb-1 flex items-center"><i class="fas fa-chart-line mr-1"></i>Ortalama Piyasa Fiyatı</p>
-                <div class="flex items-center space-x-2"><span class="text-sm font-medium text-gray-900 dark:text-white">₺${benchmark.minPrice} - ₺${benchmark.maxPrice}</span><span class="text-xs text-green-500">arasında</span></div>
-              </div>` : '' }
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">${r.title}</h3>
+            <div class="flex items-center space-x-2 text-gray-600 dark:text-gray-400 text-sm mb-3"><i class="fas fa-map-marker-alt"></i><span>${clinic.name} • ${r.location}</span></div>
+            ${r.budgetMin||r.budgetMax ? `<p class="text-sm text-gray-600 dark:text-gray-400">Bütçe: ₺${r.budgetMin||0} – ₺${r.budgetMax||0}</p>`:''}
           </div>
           <div class="text-right ml-4">
-            <span class="inline-block px-2 py-1 text-xs font-medium rounded-full border ${statusColor(request.status,hasOffers)} mb-2">${statusText(request.status,hasOffers)}</span>
+            <span class="inline-block px-2 py-1 text-xs font-medium rounded-full border ${statusColor(r.status,hasOffers)} mb-2">${statusText(r.status,hasOffers)}</span>
             <div class="px-3 py-2 rounded-md ${isExpired?'bg-red-500/10 text-red-500':'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400'}">
-              <p class="text-xs mb-1">Kalan Süre</p>${formatCountdown(request.deadline)}
+              <p class="text-xs mb-1">Kalan Süre</p>${formatCountdown(r.deadline)}
             </div>
           </div>
         </div>
+
         <div class="flex items-center justify-between text-sm">
-          <div class="flex items-center space-x-4">
-            <span class="text-gray-600 dark:text-gray-400 flex items-center"><i class="fas fa-eye mr-1"></i>${request.views} görüntüleme</span>
-            <span class="text-gray-600 dark:text-gray-400 flex items-center"><i class="fas fa-comment mr-1"></i>${request.offers.length} teklif</span>
+          <div class="flex items-center gap-4">
+            <span class="text-gray-600 dark:text-gray-400"><i class="fas fa-eye mr-1"></i>${r.views} görüntüleme</span>
+            <span class="text-gray-600 dark:text-gray-400"><i class="fas fa-comment mr-1"></i>${r.offers.length} teklif</span>
           </div>
-          <button onclick="showNotification('Detaylar','Talep detayları görüntüleniyor','info')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors">${hasOffers?'Teklifleri İncele':'Detayları Görüntüle'}</button>
+          ${actionBtn}
         </div>
-        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div class="grid grid-cols-2 gap-4 text-sm">
-            <div><span class="text-gray-600 dark:text-gray-400">Kategori:</span><span class="ml-2 text-gray-900 dark:text-white">${request.category}</span></div>
-            <div><span class="text-gray-600 dark:text-gray-400">Miktar:</span><span class="ml-2 text-gray-900 dark:text-white">${request.quantity} ${request.unit}</span></div>
-          </div>
-        </div>
-      </div>`;
-    }
 
-    function SupplierCard(s){
-      const getBadgeIcon=b=> b==='Hızlı Yanıtlayan' ? 'fa-bolt' : b==='En Çok Teklif Kazanan' ? 'fa-trophy' : b==='Belgeleri Onaylı' ? 'fa-certificate' : 'fa-award';
-      const getBadgeColor=b=> b==='Hızlı Yanıtlayan' ? 'bg-green-500/10 text-green-500 border-green-500/20'
-                              : b==='En Çok Teklif Kazanan' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20'
-                              : b==='Belgeleri Onaylı' ? 'bg-purple-500/10 text-purple-500 border-purple-500/20'
-                              : 'bg-orange-500/10 text-orange-500 border-orange-500/20';
-      return `
-      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center space-x-4">
-            <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=100&h=100"
-                 alt="${s.companyName} Logo" class="w-16 h-16 rounded-lg object-cover border border-gray-200 dark:border-gray-700">
-            <div>
-              <h3 class="font-semibold text-gray-900 dark:text-white">${s.companyName}</h3>
-              <div class="flex items-center space-x-1 text-gray-600 dark:text-gray-400 text-sm"><i class="fas fa-map-marker-alt"></i><span>${s.location}</span></div>
-              ${renderStarRating(s.averageRating, s.totalRatings)}
+        ${r.offers.length ? `
+          <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm font-medium text-gray-900 dark:text-white mb-2">Son Teklifler</p>
+            <div class="space-y-2">
+              ${r.offers.slice(-3).reverse().map(o=>{
+                const sup = AppState.users.find(u=>u.id===o.supplierId) || {name:'Tedarikçi'};
+                return `<div class="text-sm flex items-center justify-between">
+                  <span class="text-gray-700 dark:text-gray-200">${sup.name} • ₺${o.price} • ${o.deliveryTime}</span>
+                  <span class="text-xs text-gray-500">${o.status}</span>
+                </div>`;
+              }).join('')}
             </div>
-          </div>
-        </div>
-
-        <div class="flex flex-wrap gap-2 mb-4">
-          ${s.badges.map(b=>`<span class="inline-flex items-center px-2 py-1 text-xs font-medium border rounded-full ${getBadgeColor(b)} badge-glow"><i class="fas ${getBadgeIcon(b)}"></i><span class="ml-1">${b}</span></span>`).join('')}
-        </div>
-
-        <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-          <h4 class="font-medium text-gray-900 dark:text-white mb-3">Operasyon Süreç Durumu</h4>
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-600 dark:text-gray-400">Sipariş #12345 - Ultrason Jeli</span>
-              <select onchange="updateOrderStatus('order1',this.value)" class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 dark:text-white">
-                <option value="preparing">Hazırlanıyor</option>
-                <option value="ready">Ürün Hazırlandı</option>
-                <option value="shipped">Kargoya Verildi</option>
-                <option value="delivered">Teslim Edildi</option>
-              </select>
-            </div>
-          </div>
-          <button onclick="showNotification('Durumlar Güncellendi','Sipariş durumları güncellendi','success')" class="w-full mt-3 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm"><i class="fas fa-save mr-2"></i>Durumları Güncelle</button>
-        </div>
-
-        <div class="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div class="text-center"><p class="text-lg font-bold text-gray-900 dark:text-white">${s.totalOffers}</p><p class="text-xs text-gray-600 dark:text-gray-400">Toplam Teklif</p></div>
-          <div class="text-center"><p class="text-lg font-bold text-gray-900 dark:text-white">${s.wonOffers}</p><p class="text-xs text-gray-600 dark:text-gray-400">Kazanılan</p></div>
-          <div class="text-center"><p class="text-lg font-bold text-gray-900 dark:text-white">${s.averageResponseTime}h</p><p class="text-xs text-gray-600 dark:text-gray-400">Ort. Yanıt</p></div>
-        </div>
+          </div>` : ''
+        }
       </div>`;
     }
 
     function Dashboard(){
+      const role = AppState.currentUser.role;
       const filtered = AppState.requests.filter(r=>{
         const byCat = AppState.categoryFilter==='all' || r.category===AppState.categoryFilter;
         const byLoc = AppState.locationFilter==='all' || r.location?.includes(AppState.locationFilter);
@@ -578,35 +403,40 @@
       <div class="container mx-auto px-4 py-8">
         ${MarketplacePulse()}
 
-        <div class="mb-8">
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center space-x-3"><i class="fas fa-chart-line text-blue-500"></i><h2 class="text-2xl font-bold text-gray-900 dark:text-white">Aktif Talepler</h2></div>
-            <div class="flex items-center space-x-4">
-              <select onchange="setCategoryFilter(this.value)" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 dark:text-white">
-                <option value="all">Tüm Kategoriler</option>
-                ${categories.map(c=>`<option value="${c}" ${AppState.categoryFilter===c?'selected':''}>${c}</option>`).join('')}
-              </select>
-              <select onchange="setLocationFilter(this.value)" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 dark:text-white">
-                <option value="all">Tüm Şehirler</option>
-                ${locations.map(l=>`<option value="${l}" ${AppState.locationFilter===l?'selected':''}>${l}</option>`).join('')}
-              </select>
-              <div class="relative">
-                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input type="text" placeholder="Ürün ara..." value="${AppState.searchQuery}" onkeyup="setSearchQuery(this.value)" class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 dark:text-white w-64">
-              </div>
-            </div>
+        <div class="mb-6 flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <i class="fas fa-clipboard-list text-blue-500"></i>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Aktif Talepler</h2>
           </div>
-
-          ${filtered.length===0 ? `
-            <div class="bg-white dark:bg-gray-800 p-12 text-center rounded-lg border border-gray-200 dark:border-gray-700">
-              <i class="fas fa-chart-line text-4xl text-gray-400 dark:text-gray-600 mb-4"></i>
-              <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Aktif talep bulunamadı</h3>
-              <p class="text-gray-600 dark:text-gray-400">${AppState.requests.length===0?'Henüz hiç talep açılmamış.':'Filtrelere uygun talep bulunamadı.'}</p>
-            </div>` :
-            `<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">${filtered.map(RequestCard).join('')}</div>`
-          }
+          ${role==='clinic' ? `<button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2" onclick="openNewRequestModal()"><i class="fas fa-plus"></i><span>Yeni Talep</span></button>` : ''}
         </div>
-      </div>`;
+
+        <div class="flex items-center gap-4 mb-6">
+          <select onchange="setCategoryFilter(this.value)" class="px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+            <option value="all">Tüm Kategoriler</option>
+            ${categories.map(c=>`<option value="${c}" ${AppState.categoryFilter===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+          <select onchange="setLocationFilter(this.value)" class="px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+            <option value="all">Tüm Şehirler</option>
+            ${locations.map(l=>`<option value="${l}" ${AppState.locationFilter===l?'selected':''}>${l}</option>`).join('')}
+          </select>
+          <div class="relative">
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input type="text" placeholder="Ürün ara..." value="${AppState.searchQuery}" onkeyup="setSearchQuery(this.value)" class="pl-10 pr-4 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 w-64">
+          </div>
+        </div>
+
+        ${filtered.length===0 ? `
+          <div class="bg-white dark:bg-gray-800 p-12 text-center rounded-lg border border-gray-200 dark:border-gray-700">
+            <i class="fas fa-chart-line text-4xl text-gray-400 dark:text-gray-600 mb-4"></i>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Aktif talep bulunamadı</h3>
+            <p class="text-gray-600 dark:text-gray-400">${AppState.requests.length===0?'Henüz hiç talep açılmamış.':'Filtrelere uygun talep bulunamadı.'}</p>
+          </div>` :
+          `<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">${filtered.map(RequestCard).join('')}</div>`
+        }
+      </div>
+      ${NewRequestModal()}
+      ${OfferModal()}`;
     }
 
     function Suppliers(){
@@ -619,41 +449,47 @@
             <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Tedarikçi bulunamadı</h3>
             <p class="text-gray-600 dark:text-gray-400">Henüz kayıtlı tedarikçi yok.</p>
           </div>` :
-          `<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">${AppState.suppliers.map(SupplierCard).join('')}</div>`
+          `<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            ${AppState.suppliers.map(s=>`
+              <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex items-center space-x-4">
+                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=100&h=100" class="w-16 h-16 rounded-lg object-cover border border-gray-200 dark:border-gray-700">
+                    <div>
+                      <h3 class="font-semibold text-gray-900 dark:text-white">${s.companyName}</h3>
+                      <div class="flex items-center space-x-1 text-gray-600 dark:text-gray-400 text-sm"><i class="fas fa-map-marker-alt"></i><span>${s.location}</span></div>
+                      ${renderStarRating(s.averageRating, s.totalRatings)}
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <div class="text-center"><p class="text-lg font-bold text-gray-900 dark:text-white">${s.totalOffers}</p><p class="text-xs text-gray-600 dark:text-gray-400">Toplam Teklif</p></div>
+                  <div class="text-center"><p class="text-lg font-bold text-gray-900 dark:text-white">${s.wonOffers}</p><p class="text-xs text-gray-600 dark:text-gray-400">Kazanılan</p></div>
+                  <div class="text-center"><p class="text-lg font-bold text-gray-900 dark:text-white">${s.averageResponseTime}h</p><p class="text-xs text-gray-600 dark:text-gray-400">Ort. Yanıt</p></div>
+                </div>
+              </div>`).join('')}
+          </div>`
         }
       </div>`;
     }
 
     function Requests(){
       const filtered=AppState.requests.filter(r=> AppState.statusFilter==='all' ? true : r.status===AppState.statusFilter );
-      const counts={
-        all:AppState.requests.length,
-        active:AppState.requests.filter(r=>r.status==='active').length,
-        closed:AppState.requests.filter(r=>r.status==='closed').length,
-        expired:AppState.requests.filter(r=>r.status==='expired').length
-      };
+      const counts={ all:AppState.requests.length, active:AppState.requests.filter(r=>r.status==='active').length, closed:AppState.requests.filter(r=>r.status==='closed').length, expired:AppState.requests.filter(r=>r.status==='expired').length };
       return `
       <div class="container mx-auto px-4 py-8">
         <div class="flex items-center justify-between mb-8">
           <div class="flex items-center space-x-3"><i class="fas fa-clipboard-list text-blue-500"></i><h1 class="text-3xl font-bold text-gray-900 dark:text-white">Talep Yönetimi</h1></div>
           <button onclick="showNotification('Yeni Talep','Yeni talep formu açılıyor','info')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"><i class="fas fa-plus"></i><span>Yeni Talep Oluştur</span></button>
         </div>
-
-        <div class="flex items-center space-x-4 mb-6">
-          <i class="fas fa-filter text-gray-500"></i>
-          <div class="flex space-x-2">
-            ${[
-              {key:'all',label:'Tümü',count:counts.all},
-              {key:'active',label:'Aktif',count:counts.active},
-              {key:'closed',label:'Kapanmış',count:counts.closed},
-              {key:'expired',label:'Süresi Dolmuş',count:counts.expired}
-            ].map(s=>`
-              <button onclick="setStatusFilter('${s.key}')" class="${AppState.statusFilter===s.key?'bg-blue-600 text-white':'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'} px-4 py-2 rounded-md text-sm font-medium transition-colors relative">
-                ${s.label}<span class="ml-2 px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">${s.count}</span>
-              </button>`).join('')}
-          </div>
+        <div class="flex items-center space-x-2 mb-6">
+          ${[
+            {key:'all',label:'Tümü',count:counts.all},
+            {key:'active',label:'Aktif',count:counts.active},
+            {key:'closed',label:'Kapanmış',count:counts.closed},
+            {key:'expired',label:'Süresi Dolmuş',count:counts.expired}
+          ].map(s=>`<button onclick="setStatusFilter('${s.key}')" class="${AppState.statusFilter===s.key?'bg-blue-600 text-white':'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'} px-4 py-2 rounded-md text-sm font-medium transition-colors">${s.label}<span class="ml-2 px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">${s.count}</span></button>`).join('')}
         </div>
-
         ${filtered.length===0 ? `
           <div class="bg-white dark:bg-gray-800 p-12 text-center rounded-lg border border-gray-200 dark:border-gray-700">
             <i class="fas fa-clipboard-list text-4xl text-gray-400 dark:text-gray-600 mb-4"></i>
@@ -665,7 +501,132 @@
       </div>`;
     }
 
-    // ---------- Ana render ----------
+    function Admin(){
+      return `
+      <div class="container mx-auto px-4 py-8">
+        <div class="flex items-center space-x-3 mb-8"><i class="fas fa-cog text-blue-500"></i><h1 class="text-3xl font-bold text-gray-900 dark:text-white">Admin Paneli</h1></div>
+        ${MarketplacePulse()}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Kategori Dağılımı (Son 7 Gün)</h3>
+            ${AppState.benchmarkPrices.map(p=>`
+              <div class="mb-3">
+                <div class="flex items-center justify-between mb-1"><span class="text-sm font-medium text-gray-900 dark:text-white">${p.category}</span><span class="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">${Math.floor(Math.random()*10)+1} talep</span></div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2"><div class="bg-blue-600 rounded-full h-2" style="width:${Math.floor(Math.random()*80)+20}%"></div></div>
+              </div>`).join('')}
+          </div>
+          <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Son Aktiviteler</h3>
+            <div class="space-y-3">
+              ${[
+                {type:'success',icon:'fa-check-circle',title:'Yeni teklif alındı', message:'Medikal Tedarik A.Ş. bir talebe teklif verdi', time:'az önce'},
+                {type:'warning',icon:'fa-clock',title:'Süre uyarısı', message:'Bir talep için son 18 saat', time:'1 saat önce'},
+                {type:'info',   icon:'fa-star', title:'Tedarikçi Puanı', message:'Yeni 5 yıldızlı değerlendirme', time:'3 saat önce'}
+              ].map(a=>{
+                const color = a.type==='success'?'green':a.type==='warning'?'orange':'blue';
+                const iconColor = a.type==='success'?'text-green-500':a.type==='warning'?'text-orange-500':'text-blue-500';
+                return `<div class="flex items-start space-x-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
+                  <div class="bg-${color}-500/10 p-2 rounded-lg"><i class="fas ${a.icon} ${iconColor}"></i></div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-gray-900 dark:text-white font-medium">${a.title}</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">${a.message}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">${a.time}</p>
+                  </div>
+                </div>`;}).join('')}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // ======== Login / Register UI ========
+    function LoginComponent(){
+      return `
+      <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8 w-full max-w-md">
+          <div class="text-center mb-8">
+            <div class="bg-blue-500/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-heartbeat text-2xl text-blue-500"></i></div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tıbbi Tedarik Pazaryeri</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-2">Giriş yapın veya kayıt olun</p>
+          </div>
+
+          <div class="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1 mb-4">
+            <button onclick="showTab('login')" id="login-tab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400">Giriş Yap</button>
+            <button onclick="showTab('demo')"  id="demo-tab"  class="flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Demo</button>
+            <button onclick="showTab('register')" id="register-tab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Kayıt Ol</button>
+          </div>
+
+          <div id="login-content" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kullanıcı Adı</label>
+              <input id="username" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" placeholder="kullanıcı adınız">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Şifre</label>
+              <input id="password" type="password" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" placeholder="şifre" onkeypress="if(event.key==='Enter') attemptLogin()">
+            </div>
+            <button onclick="attemptLogin()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Giriş Yap</button>
+          </div>
+
+          <div id="demo-content" class="space-y-3 hidden mt-4">
+            <button onclick="quickLogin('clinic1','clinic123')" class="w-full flex items-center gap-3 p-3 border rounded-md dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"><i class="fas fa-hospital text-blue-500"></i><span>Klinik (clinic1)</span></button>
+            <button onclick="quickLogin('supplier1','supplier123')" class="w-full flex items-center gap-3 p-3 border rounded-md dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"><i class="fas fa-truck text-green-500"></i><span>Tedarikçi (supplier1)</span></button>
+            <button onclick="quickLogin('admin','admin123')" class="w-full flex items-center gap-3 p-3 border rounded-md dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"><i class="fas fa-cog text-purple-500"></i><span>Admin (admin)</span></button>
+          </div>
+
+          <div id="register-content" class="hidden mt-4 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div><label class="text-sm text-gray-700 dark:text-gray-300">Ad / Firma</label><input id="reg_name" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"></div>
+              <div><label class="text-sm text-gray-700 dark:text-gray-300">Kullanıcı Adı</label><input id="reg_username" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div><label class="text-sm text-gray-700 dark:text-gray-300">E-posta</label><input id="reg_email" type="email" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"></div>
+              <div><label class="text-sm text-gray-700 dark:text-gray-300">Telefon (ops.)</label><input id="reg_phone" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div><label class="text-sm text-gray-700 dark:text-gray-300">Konum</label><input id="reg_location" value="İstanbul, Türkiye" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"></div>
+              <div><label class="text-sm text-gray-700 dark:text-gray-300">Rol</label>
+                <select id="reg_role" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+                  <option value="">Seçiniz</option><option value="clinic">Klinik</option><option value="supplier">Tedarikçi</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div><label class="text-sm text-gray-700 dark:text-gray-300">Şifre</label><input id="reg_password" type="password" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"></div>
+              <div><label class="text-sm text-gray-700 dark:text-gray-300">Şifre (Tekrar)</label><input id="reg_password2" type="password" class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"></div>
+            </div>
+            <button onclick="attemptRegister()" class="w-full bg-emerald-600 text-white py-2 px-4 rounded-md hover:bg-emerald-700">Kayıt Ol ve Giriş Yap</button>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function showTab(name){
+      ['login','demo','register'].forEach(k=>{
+        const c = document.getElementById(`${k}-content`);
+        const t = document.getElementById(`${k}-tab`);
+        if(c) c.classList.toggle('hidden', name!==k);
+        if(t) t.className = name===k
+          ? 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400'
+          : 'flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300';
+      });
+    }
+    function attemptLogin(){ const u=document.getElementById('username').value; const p=document.getElementById('password').value; if(login(u,p)) render(); else showNotification('Giriş Başarısız','Kullanıcı adı veya şifre hatalı','error'); }
+    function quickLogin(u,p){ document.getElementById('username').value=u; document.getElementById('password').value=p; setTimeout(()=>{ if(login(u,p)) render(); },100); }
+    function attemptRegister(){
+      register({
+        name:document.getElementById('reg_name').value.trim(),
+        username:document.getElementById('reg_username').value.trim(),
+        email:document.getElementById('reg_email').value.trim(),
+        phone:document.getElementById('reg_phone').value.trim(),
+        location:document.getElementById('reg_location').value.trim(),
+        role:document.getElementById('reg_role').value,
+        password:document.getElementById('reg_password').value,
+        password2:document.getElementById('reg_password2').value
+      });
+    }
+
+    // ======== Render Root ========
     function render(){
       const app=document.getElementById('app');
       if(!AppState.currentUser){ app.innerHTML = LoginComponent(); return; }
@@ -678,80 +639,13 @@
       app.innerHTML = HeaderComponent() + content;
     }
 
-    function Admin(){
-      const recent=[
-        {id:1,type:'success',icon:'fa-check-circle',title:'Yeni teklif alındı', message:'Medikal Tedarik A.Ş. "Ultrason Jeli" talebinize teklif verdi', time:'2 dakika önce'},
-        {id:2,type:'warning',icon:'fa-clock',title:'Süre uyarısı', message:'"EKG Kağıdı" talebi için son 18 saat kaldı', time:'1 saat önce'},
-        {id:3,type:'info',   icon:'fa-star', title:'Tedarikçi değerlendirildi', message:'Özel Tıp Merkezi TıpTech Solutions\'a 5 yıldız verdi', time:'3 saat önce'}
-      ];
-      return `
-      <div class="container mx-auto px-4 py-8">
-        <div class="flex items-center space-x-3 mb-8"><i class="fas fa-cog text-blue-500"></i><h1 class="text-3xl font-bold text-gray-900 dark:text-white">Admin Paneli</h1></div>
-        ${MarketplacePulse()}
-        <div class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i class="fas fa-chart-bar text-green-500 mr-3"></i>Detaylı Analitikler</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Toplam Kullanıcı</h3><div class="flex items-center space-x-2"><i class="fas fa-users text-2xl text-blue-500"></i><div><p class="text-2xl font-bold text-gray-900 dark:text-white">${AppState.users.length}</p><p class="text-xs text-green-500">+8% bu hafta</p></div></div></div>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Aktif Siparişler</h3><div class="flex items-center space-x-2"><i class="fas fa-chart-line text-2xl text-orange-500"></i><div><p class="text-2xl font-bold text-gray-900 dark:text-white">67</p><p class="text-xs text-blue-500">23 hazırlanıyor</p></div></div></div>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Tamamlanan İşlemler</h3><div class="flex items-center space-x-2"><i class="fas fa-check-circle text-2xl text-green-500"></i><div><p class="text-2xl font-bold text-gray-900 dark:text-white">1,243</p><p class="text-xs text-green-500">98.5% başarı oranı</p></div></div></div>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Bekleyen İncelemeler</h3><div class="flex items-center space-x-2"><i class="fas fa-exclamation-triangle text-2xl text-yellow-500"></i><div><p class="text-2xl font-bold text-gray-900 dark:text-white">12</p><p class="text-xs text-yellow-500">3 yeni başvuru</p></div></div></div>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Kategori Dağılımı (Son 7 Gün)</h3>
-            <div class="space-y-4">
-              ${AppState.benchmarkPrices.map(p=>`
-                <div>
-                  <div class="flex items-center justify-between mb-1"><span class="text-sm font-medium text-gray-900 dark:text-white">${p.category}</span>
-                    <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs">${Math.floor(Math.random()*10)+1} talep</span>
-                  </div>
-                  <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2"><div class="bg-blue-600 rounded-full h-2" style="width:${Math.floor(Math.random()*80)+20}%"></div></div>
-                </div>`).join('')}
-            </div>
-          </div>
-          <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Son Aktiviteler</h3>
-            <div class="space-y-4">
-              ${recent.map(a=>{
-                const color = a.type==='success'?'green':a.type==='warning'?'orange':'blue';
-                const iconColor = a.type==='success'?'text-green-500':a.type==='warning'?'text-orange-500':'text-blue-500';
-                return `
-                <div class="flex items-start space-x-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                  <div class="bg-${color}-500/10 p-2 rounded-lg"><i class="fas ${a.icon} ${iconColor}"></i></div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-gray-900 dark:text-white font-medium">${a.title}</p>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm">${a.message}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">${a.time}</p>
-                  </div>
-                  <button onclick="showNotification('Aktivite','Aktivite detayları görüntüleniyor','info')" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm whitespace-nowrap">Görüntüle</button>
-                </div>`; }).join('')}
-            </div>
-          </div>
-        </div>
-      </div>`;
-    }
-
-    // ---------- Init ----------
+    // ======== Init ========
     function init(){
-      loadUsers();                   // kullanıcıları yükle / seed et
-      checkAuth();
+      loadUsers(); checkAuth();
       document.documentElement.classList.toggle('dark', AppState.isDarkMode);
       render();
-
-      // Demo bildirimler
-      setTimeout(()=>showNotification('Yeni Teklif Aldınız!','Ultrason jeli talebinize 2 tedarikçi cevap verdi.','success'),3000);
-      setTimeout(()=>showNotification('Süre Uyarısı','EKG Kağıdı talebiniz için 18 saat kaldı.','warning'),8000);
-      setTimeout(()=>showNotification('Sipariş Güncellendi','Medikal Tedarik A.Ş. siparişinizi hazırladı.','info'),13000);
-
-      // Sayaçları tazele
-      setInterval(()=>{
-        const els=document.querySelectorAll('.countdown-text');
-        if(els.length>0) render();
-      },1000);
+      setInterval(()=>{ if(document.querySelectorAll('.countdown-text').length) render(); },1000);
     }
-
-    // Başlat
     init();
   </script>
 </body>
